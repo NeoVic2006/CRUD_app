@@ -24,7 +24,7 @@
     git add .
     git commit -m "first commit"
     git branch -M main
-    git remote add origin https://github.com/NeoVic2006/GRM_project.git
+    git remote add origin https://github.com/NeoVic2006/CRUD_app.git
     git push -u origin main
 
     git pull origin master
