@@ -3,24 +3,8 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 import sqlite3
 from PyQt5.QtWidgets import QMessageBox
 
+
 class Ui_Registration(object):
-    def Insert_Data_In_DB(self):
-        username = self.lineEditUsername.text()
-        password = self.lineEdit_2.text()
-        confirm_password = self.lineEdit_3.text()
-        dbt = self.dateEdit.text()
-        if password == confirm_password:
-            connection = sqlite3.connect("login.db")
-            connection.execute("INSERT INTO USERS VALUES(?, ?, ?)", (username, password, dbt))
-            connection.commit()
-            connection.close()
-            #QMessageBox.warning(Registration, "Error", "User was created succesfully!")
-            print("User was created succesfully!")
-        else:
-            #QMessageBox.warning(MainWindow, "Error", "The password and confirmation password do not match. Try again.")
-            print("The password and confirmation password do not match. Try again.")
-
-
     def setupUi(self, Registration):
         Registration.setObjectName("Registration")
         Registration.resize(400, 300)
@@ -35,6 +19,11 @@ class Ui_Registration(object):
         self.pushButtonRegCancel = QtWidgets.QPushButton(Registration)
         self.pushButtonRegCancel.setGeometry(QtCore.QRect(200, 230, 75, 23))
         self.pushButtonRegCancel.setObjectName("pushButtonRegCancel")
+
+        #------------
+        self.pushButtonRegCancel.clicked.connect(Registration.close)
+        #------------   
+
         self.lineEditUsername = QtWidgets.QLineEdit(Registration)
         self.lineEditUsername.setGeometry(QtCore.QRect(70, 40, 241, 21))
         self.lineEditUsername.setObjectName("lineEditUsername")
@@ -63,6 +52,23 @@ class Ui_Registration(object):
         self.lineEdit_2.setPlaceholderText(_translate("Registration", "Password"))
         self.lineEdit_3.setPlaceholderText(_translate("Registration", "Repeat password"))
         self.label.setText(_translate("Registration", "Enter your Bitrhday:"))
+
+
+    def Insert_Data_In_DB(self):
+        username = self.lineEditUsername.text()
+        password = self.lineEdit_2.text()
+        confirm_password = self.lineEdit_3.text()
+        dbt = self.dateEdit.text()
+        if password == confirm_password:
+            connection = sqlite3.connect("login.db")
+            connection.execute("INSERT INTO USERS VALUES(?, ?, ?)", (username, password, dbt))
+            connection.commit()
+            connection.close()
+            QMessageBox.warning(Registration, "Error", "User was created succesfully!")
+            print("User was created succesfully!")
+        else:
+            #QMessageBox.warning(Registration, "Error", "The password and confirmation password do not match. Try again.")
+            print("The password and confirmation password do not match. Try again.")
 
 
 if __name__ == "__main__":

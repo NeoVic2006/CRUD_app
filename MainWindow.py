@@ -1,10 +1,9 @@
-from PasswordRecovery import Ui_Dialog
 import sqlite3
-from PyQt5 import QtCore, QtGui, QtWidgets
+from PasswordRecovery import Ui_Dialog
+from PyQt5 import QtCore, QtWidgets
 from AdminWindow import Ui_AdminWindow
 from PyQt5.QtWidgets import QMessageBox
 from Usercreation import Ui_Registration
-
 
 class Ui_MainWindow(object):
     def open_admin_window(self):
@@ -14,7 +13,7 @@ class Ui_MainWindow(object):
         self.window = QtWidgets.QMainWindow()
         self.ui = Ui_AdminWindow()
         self.ui.setupUi(self.window)
-        MainWindow.hide()
+        #MainWindow.hide()
         self.window.show()
 
 
@@ -44,8 +43,14 @@ class Ui_MainWindow(object):
             QMessageBox.warning(MainWindow, "Error", "Invalid Username or Password")
 
 
-    def signUpcheck(self):
-        pass
+    def password_recovery(self):
+        """
+        After pressing "Forgot password" button this function is opening "Password recovery" Window
+        """
+        self.window = QtWidgets.QDialog()
+        self.ui = Ui_Dialog()
+        self.ui.setupUi(self.window)
+        self.window.show()
 
 
     def setupUi(self, MainWindow):
@@ -78,6 +83,10 @@ class Ui_MainWindow(object):
         self.ButtonCancel.setGeometry(QtCore.QRect(530, 250, 141, 51))
         self.ButtonCancel.setObjectName("ButtonCancel")
 
+        #------------
+        self.ButtonCancel.clicked.connect(MainWindow.close)
+        #------------    
+
         self.checkBox_Rem_my_Username = QtWidgets.QCheckBox(self.centralwidget)
         self.checkBox_Rem_my_Username.setGeometry(QtCore.QRect(290, 330, 311, 17))
         self.checkBox_Rem_my_Username.setObjectName("checkBox_Rem_my_Username")
@@ -89,6 +98,10 @@ class Ui_MainWindow(object):
         self.Button_Forgot_pass = QtWidgets.QPushButton(self.centralwidget)
         self.Button_Forgot_pass.setGeometry(QtCore.QRect(290, 390, 171, 21))
         self.Button_Forgot_pass.setObjectName("Button_Forgot_pass")
+
+        #------------
+        self.Button_Forgot_pass.clicked.connect(self.password_recovery)
+        #------------       
 
         self.lineEdit = QtWidgets.QLineEdit(self.centralwidget)
         self.lineEdit.setGeometry(QtCore.QRect(210, 140, 461, 20))
@@ -134,7 +147,7 @@ class Ui_MainWindow(object):
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
         self.ButtonEnter.setText(_translate("MainWindow", "Enter"))
         self.ButtonRegistery.setText(_translate("MainWindow", "Registery"))
-        self.ButtonCancel.setText(_translate("MainWindow", "Cancel"))
+        self.ButtonCancel.setText(_translate("MainWindow", "Exit"))
         self.checkBox_Rem_my_Username.setText(_translate("MainWindow", "Remeber my Username"))
         self.checkBox_Show_pass.setText(_translate("MainWindow", "Show password "))
         self.Button_Forgot_pass.setText(_translate("MainWindow", "Forgot password?"))

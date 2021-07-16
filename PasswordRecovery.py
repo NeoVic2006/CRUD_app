@@ -5,12 +5,19 @@ class Ui_Dialog(object):
     def setupUi(self, Dialog):
         Dialog.setObjectName("Dialog")
         Dialog.resize(400, 300)
+
         self.pushButonChangPass = QtWidgets.QPushButton(Dialog)
         self.pushButonChangPass.setGeometry(QtCore.QRect(80, 160, 111, 23))
         self.pushButonChangPass.setObjectName("pushButonChangPass")
+
         self.pushButtonCancel = QtWidgets.QPushButton(Dialog)
         self.pushButtonCancel.setGeometry(QtCore.QRect(230, 160, 75, 23))
         self.pushButtonCancel.setObjectName("pushButtonCancel")
+
+        #------------
+        self.pushButtonCancel.clicked.connect(Dialog.close)
+        #------------ 
+
         self.lineEdit = QtWidgets.QLineEdit(Dialog)
         self.lineEdit.setGeometry(QtCore.QRect(80, 90, 221, 20))
         self.lineEdit.setObjectName("lineEdit")
