@@ -1,32 +1,56 @@
+from PasswordRecovery import Ui_Dialog
 import sqlite3
 from PyQt5 import QtCore, QtGui, QtWidgets
 from AdminWindow import Ui_AdminWindow
+from PyQt5.QtWidgets import QMessageBox
+from Usercreation import Ui_Registration
 
 
 class Ui_MainWindow(object):
-    def loginCheck(self):
+    def open_admin_window(self):
+        """
+        After succesfull login to system this function will close Login Window and open Admin Window
+        """
+        self.window = QtWidgets.QMainWindow()
+        self.ui = Ui_AdminWindow()
+        self.ui.setupUi(self.window)
+        MainWindow.hide()
+        self.window.show()
+
+
+    def sign_Up_window(self):
+        """
+        After pressing "Registery" button this function is opening UserRegister Window
+        """
+        self.window = QtWidgets.QDialog()
+        self.ui = Ui_Registration()
+        self.ui.setupUi(self.window)
+        self.window.show()
+
+
+    def login_Check(self):
         """
         Function to check with DB and see is user can login succesfully  
         """
         username = self.lineEdit.text()
         password = self.lineEdit_2.text()
-
         connection = sqlite3.connect("login.db")
         result = connection.execute("SELECT * FROM USERS WHERE USERNAME = ? AND PASSWORD = ?", (username, password))
-        if (len(result.fetchall()) >  0 ):               # If User is found 
+        if (len(result.fetchall()) >  0 ):               # If User is found in DB
             print("User found!")
-            self.window = QtWidgets.QMainWindow()
-            self.ui = Ui_AdminWindow()
-            self.ui.setupUi(self.window)
-            MainWindow.hide()
-            self.window.show()
+            self.open_admin_window()
         else: 
             print("User Not Found!")
+            QMessageBox.warning(MainWindow, "Error", "Invalid Username or Password")
+
+
+    def signUpcheck(self):
+        pass
 
 
     def setupUi(self, MainWindow):
         """
-        Creating Main window will log in screen
+        Creating Main window with log in screen
         """
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(920, 549)
@@ -39,12 +63,16 @@ class Ui_MainWindow(object):
         self.ButtonEnter.setObjectName("ButtonEnter")
 
         #------------
-        self.ButtonEnter.clicked.connect(self.loginCheck)
-        #------------
+        self.ButtonEnter.clicked.connect(self.login_Check)
+        #------------       
 
         self.ButtonRegistery = QtWidgets.QPushButton(self.centralwidget)
         self.ButtonRegistery.setGeometry(QtCore.QRect(370, 250, 141, 51))
         self.ButtonRegistery.setObjectName("ButtonRegistery")
+
+        #------------
+        self.ButtonRegistery.clicked.connect(self.sign_Up_window)
+        #------------
 
         self.ButtonCancel = QtWidgets.QPushButton(self.centralwidget)
         self.ButtonCancel.setGeometry(QtCore.QRect(530, 250, 141, 51))

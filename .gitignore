@@ -140,8 +140,8 @@ cython_debug/
 
 
 
-MainWindowUI.ui
-
 notes.txt
 
 UI_Files
+
+CRUD.py
