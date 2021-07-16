@@ -32,3 +32,8 @@
     git pull %remotename% %branchname%
 
     git pull origin %branchname% --allow-unrelated-histories     // If you see error: "fatal: refusing to merge unrelated histories"
+
+
+4) PyQt5:
+    pyuic5 -x %name_of_UI_file% -o %Name_of_new_PY_file%     // Transfering UI file to PY file    example:(  pyuic5 -x MainWindowUI.ui -o MainWindow.py  )
+
