@@ -1,15 +1,19 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 import sqlite3
 from AddUserWindow import Ui_AddUser
+from PyQt5.QtWidgets import QMessageBox
+from BirthdayWindow import Ui_BirthdayWindow
+
 
 class Ui_AdminWindow(object):
+    
     def setupUi(self, AdminWindow):
         AdminWindow.setObjectName("AdminWindow")
-        AdminWindow.resize(586, 686)
+        AdminWindow.resize(586, 790)
         self.centralwidget = QtWidgets.QWidget(AdminWindow)
         self.centralwidget.setObjectName("centralwidget")
         self.tabWidget = QtWidgets.QTabWidget(self.centralwidget)
-        self.tabWidget.setGeometry(QtCore.QRect(40, 40, 41, 491))
+        self.tabWidget.setGeometry(QtCore.QRect(60, 40, 20, 491))
         self.tabWidget.setLayoutDirection(QtCore.Qt.LeftToRight)
         self.tabWidget.setTabPosition(QtWidgets.QTabWidget.West)
         self.tabWidget.setTabShape(QtWidgets.QTabWidget.Triangular)
@@ -65,9 +69,19 @@ class Ui_AdminWindow(object):
         self.pushButton_2 = QtWidgets.QPushButton(self.centralwidget)
         self.pushButton_2.setGeometry(QtCore.QRect(270, 530, 121, 51))
         self.pushButton_2.setObjectName("pushButton_2")
+
+        #------------
+        self.pushButton_2.clicked.connect(self.Update_user)
+        #------------
+       
         self.pushButton_3 = QtWidgets.QPushButton(self.centralwidget)
         self.pushButton_3.setGeometry(QtCore.QRect(420, 530, 121, 51))
         self.pushButton_3.setObjectName("pushButton_3")
+
+        #------------
+        self.pushButton_3.clicked.connect(self.Delete_user)
+        #------------
+
         self.label = QtWidgets.QLabel(self.centralwidget)
         self.label.setGeometry(QtCore.QRect(330, 0, 91, 31))
         font = QtGui.QFont()
@@ -84,7 +98,7 @@ class Ui_AdminWindow(object):
         self.tableWidget = QtWidgets.QTableWidget(self.centralwidget)
         self.tableWidget.setGeometry(QtCore.QRect(80, 40, 481, 441))
         self.tableWidget.setRowCount(10)
-        self.tableWidget.setColumnCount(6)
+        self.tableWidget.setColumnCount(3)
         self.tableWidget.setObjectName("tableWidget")
         item = QtWidgets.QTableWidgetItem()
         self.tableWidget.setHorizontalHeaderItem(0, item)
@@ -96,9 +110,45 @@ class Ui_AdminWindow(object):
         self.tableWidget.horizontalHeader().setDefaultSectionSize(150)
         self.tableWidget.horizontalHeader().setMinimumSectionSize(45)
 
+        #------------
+        self.tableWidget.itemSelectionChanged.connect(self.Get_user_data_from_table)
+        #------------        
+
         self.label_Comments = QtWidgets.QLabel(self.centralwidget)
         self.label_Comments.setGeometry(QtCore.QRect(80, 610, 441, 31))
         self.label_Comments.setObjectName("label_Comments")
+
+        self.UpdateUserComment = QtWidgets.QLabel(self.centralwidget)
+        self.UpdateUserComment.setGeometry(QtCore.QRect(60, 590, 141, 31))
+        self.UpdateUserComment.setObjectName("UpdateUserComment")
+
+        self.UpdateUsername = QtWidgets.QLineEdit(self.centralwidget)
+        self.UpdateUsername.setGeometry(QtCore.QRect(60, 620, 131, 20))
+        self.UpdateUsername.setText("")
+        self.UpdateUsername.setPlaceholderText("")
+        self.UpdateUsername.setObjectName("UpdateUsername")
+
+        self.UpdatePhone = QtWidgets.QLineEdit(self.centralwidget)
+        self.UpdatePhone.setGeometry(QtCore.QRect(60, 650, 131, 20))
+        self.UpdatePhone.setText("")
+        self.UpdatePhone.setPlaceholderText("")
+        self.UpdatePhone.setObjectName("UpdatePhone")
+
+        self.dbtLabel = QtWidgets.QLabel(self.centralwidget)
+        self.dbtLabel.setGeometry(QtCore.QRect(60, 690, 61, 16))
+        self.dbtLabel.setObjectName("dbtLabel")
+
+        self.dbtDate = QtWidgets.QDateEdit(self.centralwidget)
+        self.dbtDate.setGeometry(QtCore.QRect(140, 680, 110, 31))
+        self.dbtDate.setObjectName("dbtDate")
+
+        self.pushButton_Done = QtWidgets.QPushButton(self.centralwidget)
+        self.pushButton_Done.setGeometry(QtCore.QRect(280, 680, 91, 31))
+        self.pushButton_Done.setObjectName("pushButton_Done")
+
+        #------------
+        self.pushButton_Done.clicked.connect(self.done_button_to_update_DB)
+        #------------     
 
         AdminWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(AdminWindow)
@@ -111,7 +161,10 @@ class Ui_AdminWindow(object):
 
         self.retranslateUi(AdminWindow)
         self.tabWidget.setCurrentIndex(0)
+
         QtCore.QMetaObject.connectSlotsByName(AdminWindow)
+        self.birthday_reminder()
+
 
     def retranslateUi(self, AdminWindow):
         _translate = QtCore.QCoreApplication.translate
@@ -137,11 +190,13 @@ class Ui_AdminWindow(object):
         item.setText(_translate("AdminWindow", "Phone"))
         item = self.tableWidget.horizontalHeaderItem(2)
         item.setText(_translate("AdminWindow", "Date of Birth"))
-        self.label_Comments.setText(_translate("AdminWindow", "TextLabel"))
+        self.UpdateUserComment.setText(_translate("AdminWindow", "Update User: "))
+        self.dbtLabel.setText(_translate("AdminWindow", "Date of Birth:"))
+        self.pushButton_Done.setText(_translate("AdminWindow", "Done"))
+        
 
 
     def handle_tabbar_clicked(self, index):
-        print(index)
         letter = ["A,B", "C,D", "E,F", "G,H,I", "J,K,L", "M,N,O", "P,Q,R", "S,T,U", "V,W,X", "Y,Z"]
         connection = sqlite3.connect("login.db")
         result = connection.execute(f"""
@@ -172,6 +227,65 @@ class Ui_AdminWindow(object):
         self.window.show()
 
 
+    def Get_user_data_from_table(self):
+        """
+        Function is getting userdata from Table , which we can use for Update or delete functions
+        """
+        if self.tableWidget.currentRow() != -1:
+            username = self.tableWidget.item(self.tableWidget.currentRow(), 0).text()
+            phone = self.tableWidget.item(self.tableWidget.currentRow(), 1).text()
+            dbt = self.tableWidget.item(self.tableWidget.currentRow(), 2).text()
+            return username, phone, dbt
+        msg = QMessageBox()
+        msg.setText("You did not choose any Users!")
+        msg.exec_() 
+        return "Bad request"
+
+
+    def Update_user(self):
+        if self.Get_user_data_from_table() != "Bad request":
+            old_username, old_phone, old_dbt = self.Get_user_data_from_table()
+            self.UpdateUsername.setText(old_username)
+            self.UpdatePhone.setText(old_phone)
+    
+
+    def done_button_to_update_DB(self):
+        old_username, old_phone, old_dbt = self.Get_user_data_from_table()
+        new_username = self.UpdateUsername.text()
+        new_phone = self.UpdatePhone.text()
+        new_dbt = self.dbtDate.text()
+
+        connection = sqlite3.connect("login.db")
+        cursor=connection.cursor()
+        cursor.execute("UPDATE CLIENTS SET username = ?, phone = ?, Date_of_birth = ? WHERE username = ? AND phone = ?", (new_username, new_phone, new_dbt, old_username, old_phone))
+        connection.commit()
+        connection.close()
+        msg = QMessageBox()
+        msg.setText("User was Updated! To refresh page just click on another tab and back!")
+        msg.exec_() 
+
+
+    def Delete_user(self):
+        if self.Get_user_data_from_table() != "Bad request":
+            username, phone, dbt = self.Get_user_data_from_table()
+            connection = sqlite3.connect("login.db")
+            cursor=connection.cursor()
+            cursor.execute("DELETE FROM CLIENTS WHERE username = ? AND phone = ?", (username, phone))
+            connection.commit()
+            connection.close()
+            msg = QMessageBox()
+            msg.setText("User was Deleted! To refresh page just click on another tab and back!")
+            msg.exec_() 
+
+
+    def birthday_reminder(self):
+        self.window = QtWidgets.QMainWindow()
+        self.ui = Ui_BirthdayWindow()
+        self.ui.setupUi(self.window)
+        self.window.setWindowFlags(QtCore.Qt.WindowStaysOnTopHint)
+        self.window.show()
+
+        
 if __name__ == "__main__":
     import sys
     app = QtWidgets.QApplication(sys.argv)

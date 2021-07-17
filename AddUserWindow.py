@@ -1,5 +1,6 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 import sqlite3
+from PyQt5.QtWidgets import QMessageBox
 
 
 class Ui_AddUser(object):
@@ -57,14 +58,16 @@ class Ui_AddUser(object):
         cursor=connection.cursor()
         cursor.execute("SELECT username FROM CLIENTS WHERE username = ? AND phone = ?", (username, phone))
         if item := cursor.fetchone():
-            print("This User already Exist")
+            msg = QMessageBox()
+            msg.setText("User with same username and phone already exist")
+            msg.exec_()
         else:
             connection.execute("INSERT OR IGNORE INTO CLIENTS VALUES(?, ?, ?)", (username, phone, dbt))
-            connection.commit()
-            connection.close()
-            print("User was created succesfully!")
-            #AddUser.hide()
-
+            msg = QMessageBox()
+            msg.setText("User was added to DB, to refresh users just click on another tab and back!")
+            msg.exec_()
+        connection.commit()
+        connection.close()
 
 if __name__ == "__main__":
     import sys

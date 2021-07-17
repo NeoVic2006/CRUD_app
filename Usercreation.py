@@ -59,16 +59,27 @@ class Ui_Registration(object):
         password = self.lineEdit_2.text()
         confirm_password = self.lineEdit_3.text()
         dbt = self.dateEdit.text()
-        if password == confirm_password:
-            connection = sqlite3.connect("login.db")
-            connection.execute("INSERT INTO USERS VALUES(?, ?, ?)", (username, password, dbt))
-            connection.commit()
-            connection.close()
-            QMessageBox.warning(Registration, "Error", "User was created succesfully!")
-            print("User was created succesfully!")
+        connection = sqlite3.connect("login.db")
+        cursor=connection.cursor()
+        cursor.execute("SELECT username FROM USERS WHERE username = ? AND password = ?", (username, password))
+
+        if item := cursor.fetchone():
+            msg = QMessageBox()
+            msg.setText("Admin with same username(and maybe password) already exist")
+            msg.exec_() 
         else:
-            #QMessageBox.warning(Registration, "Error", "The password and confirmation password do not match. Try again.")
-            print("The password and confirmation password do not match. Try again.")
+            if password == confirm_password:
+                connection.execute("INSERT INTO USERS VALUES(?, ?, ?)", (username, password, dbt))
+                connection.commit()
+                connection.close()
+                msg = QMessageBox()
+                msg.setText("User was created succesfully! ")
+                msg.exec_() 
+            else:
+                msg = QMessageBox()
+                msg.setText("The password and confirmation password do not match. Try again.")
+                msg.exec_() 
+
 
 
 if __name__ == "__main__":
