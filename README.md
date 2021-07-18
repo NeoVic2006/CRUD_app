@@ -14,5 +14,6 @@
 
 Схема БД:
    
-![alt text](https://ibb.co/2qB53Fn)
+![Image](https://user-images.githubusercontent.com/48185629/126081804-477f4caf-dc10-49d6-aaa4-00bd9b9e1cfd.PNG)
+
 
