@@ -1,7 +1,7 @@
 # CRUD_app приложение. 
 
 Установка: 
-Скопируйте депозит из репозитория: https://github.com/NeoVic2006/CRUD_app.git
+Скопируйте депозит из репозитория: https://github.com/NeoVic2006/CRUD_app.git              
 Запустите Mainwindow.py 
 
 
