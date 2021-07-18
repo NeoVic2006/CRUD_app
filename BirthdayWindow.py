@@ -23,10 +23,14 @@ class Ui_BirthdayWindow(object):
         self.labelBirthday = QtWidgets.QLabel(BirthdayWindow)
         self.labelBirthday.setGeometry(QtCore.QRect(70, 20, 301, 21))
         self.labelBirthday.setObjectName("labelBirthday")
+
         self.pushButton = QtWidgets.QPushButton(BirthdayWindow)
         self.pushButton.setGeometry(QtCore.QRect(170, 420, 121, 41))
         self.pushButton.setObjectName("pushButton")
 
+        #------------
+        self.pushButton.clicked.connect(BirthdayWindow.close)
+        #------------     
 
         connection = sqlite3.connect("login.db")
         result = connection.execute("SELECT username, date('now') - Date_of_birth FROM CLIENTS")

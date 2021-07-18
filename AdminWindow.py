@@ -6,7 +6,6 @@ from BirthdayWindow import Ui_BirthdayWindow
 
 
 class Ui_AdminWindow(object):
-    
     def setupUi(self, AdminWindow):
         AdminWindow.setObjectName("AdminWindow")
         AdminWindow.resize(586, 790)
@@ -92,6 +91,7 @@ class Ui_AdminWindow(object):
         self.label_2.setGeometry(QtCore.QRect(420, 0, 91, 31))
         font = QtGui.QFont()
         font.setPointSize(11)
+
         self.label_2.setFont(font)
         self.label_2.setObjectName("label_2")
 
@@ -164,6 +164,7 @@ class Ui_AdminWindow(object):
 
         QtCore.QMetaObject.connectSlotsByName(AdminWindow)
         self.birthday_reminder()
+        self.handle_tabbar_clicked(0)
 
 
     def retranslateUi(self, AdminWindow):
@@ -183,7 +184,9 @@ class Ui_AdminWindow(object):
         self.pushButton_2.setText(_translate("AdminWindow", "Change User"))
         self.pushButton_3.setText(_translate("AdminWindow", "Delete User"))
         self.label.setText(_translate("AdminWindow", "Logged in: "))
+
         self.label_2.setText(_translate("AdminWindow", "TEMP"))
+
         item = self.tableWidget.horizontalHeaderItem(0)
         item.setText(_translate("AdminWindow", "Name"))
         item = self.tableWidget.horizontalHeaderItem(1)
@@ -197,6 +200,9 @@ class Ui_AdminWindow(object):
 
 
     def handle_tabbar_clicked(self, index):
+        """
+        Function is making search in DB and showing results when proper TAB is chosen
+        """
         letter = ["A,B", "C,D", "E,F", "G,H,I", "J,K,L", "M,N,O", "P,Q,R", "S,T,U", "V,W,X", "Y,Z"]
         connection = sqlite3.connect("login.db")
         result = connection.execute(f"""
@@ -206,7 +212,7 @@ class Ui_AdminWindow(object):
                 select case when instr(l, ",") = 0 then "" else substr(l, instr(l, ",")+1, length(l) - instr(l, ",")) end, case when instr(l, ",") = 0 then l else substr(l, 1, instr(l, ",")-1) end from letters where length(l) > 0
             )
             select c.username, c.phone, c.date_of_birth from clients c where exists (
-                select 1 from letters l where length(l.r) > 0 and substr(c.username, 1, length(l.r)) == l.r
+                select 1 from letters l where length(l.r) > 0 and substr(lower(c.username), 1, length(l.r)) == lower(l.r)
             )
             """)
         self.tableWidget.setRowCount(0)
@@ -231,18 +237,21 @@ class Ui_AdminWindow(object):
         """
         Function is getting userdata from Table , which we can use for Update or delete functions
         """
-        if self.tableWidget.currentRow() != -1:
-            username = self.tableWidget.item(self.tableWidget.currentRow(), 0).text()
-            phone = self.tableWidget.item(self.tableWidget.currentRow(), 1).text()
-            dbt = self.tableWidget.item(self.tableWidget.currentRow(), 2).text()
-            return username, phone, dbt
-        msg = QMessageBox()
-        msg.setText("You did not choose any Users!")
-        msg.exec_() 
-        return "Bad request"
-
-
+        if self.tableWidget.currentRow() == -1:
+            msg = QMessageBox()
+            msg.setText("You did not choose any User")
+            msg.exec_() 
+            return "Bad request"
+        username = self.tableWidget.item(self.tableWidget.currentRow(), 0).text()
+        phone = self.tableWidget.item(self.tableWidget.currentRow(), 1).text()
+        dbt = self.tableWidget.item(self.tableWidget.currentRow(), 2).text()
+        return username, phone, dbt
+        
+        
     def Update_user(self):
+        """
+        Function posting fields on the bottom for chosen User
+        """
         if self.Get_user_data_from_table() != "Bad request":
             old_username, old_phone, old_dbt = self.Get_user_data_from_table()
             self.UpdateUsername.setText(old_username)
@@ -250,11 +259,13 @@ class Ui_AdminWindow(object):
     
 
     def done_button_to_update_DB(self):
+        """
+        Function Updating DB for chosen User
+        """
         old_username, old_phone, old_dbt = self.Get_user_data_from_table()
         new_username = self.UpdateUsername.text()
         new_phone = self.UpdatePhone.text()
         new_dbt = self.dbtDate.text()
-
         connection = sqlite3.connect("login.db")
         cursor=connection.cursor()
         cursor.execute("UPDATE CLIENTS SET username = ?, phone = ?, Date_of_birth = ? WHERE username = ? AND phone = ?", (new_username, new_phone, new_dbt, old_username, old_phone))
@@ -266,6 +277,9 @@ class Ui_AdminWindow(object):
 
 
     def Delete_user(self):
+        """
+        Function cheks if User was chosen and removing user from DB. 
+        """
         if self.Get_user_data_from_table() != "Bad request":
             username, phone, dbt = self.Get_user_data_from_table()
             connection = sqlite3.connect("login.db")
@@ -279,6 +293,9 @@ class Ui_AdminWindow(object):
 
 
     def birthday_reminder(self):
+        """
+        Function starts reminder window
+        """
         self.window = QtWidgets.QMainWindow()
         self.ui = Ui_BirthdayWindow()
         self.ui.setupUi(self.window)

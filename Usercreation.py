@@ -55,6 +55,9 @@ class Ui_Registration(object):
 
 
     def Insert_Data_In_DB(self):
+        """
+        Function Inserting data in BD for admin creation. Its also checking new Admin for uniqueness. 
+        """
         username = self.lineEditUsername.text()
         password = self.lineEdit_2.text()
         confirm_password = self.lineEdit_3.text()

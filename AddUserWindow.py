@@ -51,6 +51,9 @@ class Ui_AddUser(object):
 
 
     def Adding_User_to_Clients_DB(self):
+        """
+        Function adding Client to DB, also checking input data for uniqueness
+        """
         username = self.lineEditUsername.text()
         phone = self.lineEdit_Phone.text()
         dbt = self.dateEdit.text()
@@ -68,6 +71,7 @@ class Ui_AddUser(object):
             msg.exec_()
         connection.commit()
         connection.close()
+
 
 if __name__ == "__main__":
     import sys

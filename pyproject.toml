@@ -6,6 +6,7 @@ authors = ["NeoVic2006 <NeoVic2006@gmail.com>"]
 
 [tool.poetry.dependencies]
 python = "^3.9"
+PyQt5 = "^5.15.4"
 
 [tool.poetry.dev-dependencies]
 PyQt5 = "^5.15.4"

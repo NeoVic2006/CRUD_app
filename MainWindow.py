@@ -5,6 +5,7 @@ from AdminWindow import Ui_AdminWindow
 from PyQt5.QtWidgets import QMessageBox
 from Usercreation import Ui_Registration
 
+
 class Ui_MainWindow(object):
     def open_admin_window(self):
         """
@@ -13,7 +14,6 @@ class Ui_MainWindow(object):
         self.window = QtWidgets.QMainWindow()
         self.ui = Ui_AdminWindow()
         self.ui.setupUi(self.window)
-        #MainWindow.hide()
         self.window.show()
 
 
@@ -31,15 +31,13 @@ class Ui_MainWindow(object):
         """
         Function to check with DB and see is user can login succesfully  
         """
-        username = self.lineEdit.text()
+        username = self.admin_login_info()
         password = self.lineEdit_2.text()
         connection = sqlite3.connect("login.db")
         result = connection.execute("SELECT * FROM USERS WHERE USERNAME = ? AND PASSWORD = ?", (username, password))
-        if (len(result.fetchall()) >  0 ):               # If User is found in DB
-            print("User found!")
+        if (len(result.fetchall()) > 0):               # If User is found in DB
             self.open_admin_window()
         else: 
-            print("User Not Found!")
             QMessageBox.warning(MainWindow, "Error", "Invalid Username or Password")
 
 
@@ -51,6 +49,10 @@ class Ui_MainWindow(object):
         self.ui = Ui_Dialog()
         self.ui.setupUi(self.window)
         self.window.show()
+
+    
+    def admin_login_info(self):
+        return self.lineEdit.text()
 
 
     def setupUi(self, MainWindow):
@@ -95,6 +97,10 @@ class Ui_MainWindow(object):
         self.checkBox_Show_pass.setGeometry(QtCore.QRect(290, 360, 311, 17))
         self.checkBox_Show_pass.setObjectName("checkBox_Show_pass")
 
+        #------------
+        self.checkBox_Show_pass.stateChanged.connect(self.Password_hide)
+        #------------
+
         self.Button_Forgot_pass = QtWidgets.QPushButton(self.centralwidget)
         self.Button_Forgot_pass.setGeometry(QtCore.QRect(290, 390, 171, 21))
         self.Button_Forgot_pass.setObjectName("Button_Forgot_pass")
@@ -106,10 +112,14 @@ class Ui_MainWindow(object):
         self.lineEdit = QtWidgets.QLineEdit(self.centralwidget)
         self.lineEdit.setGeometry(QtCore.QRect(210, 140, 461, 20))
         self.lineEdit.setObjectName("lineEdit")
+
         self.lineEdit_2 = QtWidgets.QLineEdit(self.centralwidget)
         self.lineEdit_2.setGeometry(QtCore.QRect(210, 190, 461, 20))
         self.lineEdit_2.setObjectName("lineEdit_2")
-
+        
+        #------------
+        self.lineEdit_2.setEchoMode(self.lineEdit_2.Password)
+        #------------
 
         MainWindow.setCentralWidget(self.centralwidget)
 
@@ -140,6 +150,16 @@ class Ui_MainWindow(object):
 
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
+
+
+    def Password_hide(self):
+        """
+        Checks status of "Show password" checkbox 
+        """        
+        if self.checkBox_Show_pass.isChecked():
+            self.lineEdit_2.setEchoMode(self.lineEdit_2.Normal)
+        else:
+            self.lineEdit_2.setEchoMode(self.lineEdit_2.Password)
 
 
     def retranslateUi(self, MainWindow):
