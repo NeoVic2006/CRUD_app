@@ -1,7 +1,7 @@
 # CRUD_app приложение. 
 
 **Установка:** 
-Было использовано при создании: PyQt5, Python 3.8, SQlite.                      
+Было использовано при создании: **PyQt5, Python 3.8, SQlite**.                      
 Скопируйте депозит из репозитория: https://github.com/NeoVic2006/CRUD_app.git   
 
 Установите все Dependences с посощью poetry файла poetry.lock: **poetry install**                       
