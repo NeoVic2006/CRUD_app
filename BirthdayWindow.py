@@ -33,9 +33,8 @@ class Ui_BirthdayWindow(object):
         #------------     
 
         connection = sqlite3.connect("login.db")
-        result = connection.execute("SELECT username, date('now') - Date_of_birth FROM CLIENTS")
+        result = connection.execute("SELECT username, Date_of_birth FROM CLIENTS WHERE (strftime('%j', Date_of_birth) - strftime('%j','now')) >= 0 AND (strftime('%j', Date_of_birth) - strftime('%j','now')) <= 8")
 
-        # solution for MySQL === ("SELECT username, Date_of_birth From CLIENTS WHERE DATEDIFF(DAY, Date_of_birth, SysDateTime())%365 < 7")
         self.tableWidgetBirthDays.setRowCount(0)
         for row_number, roww_data in enumerate(result):
             self.tableWidgetBirthDays.insertRow(row_number)

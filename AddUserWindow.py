@@ -56,7 +56,9 @@ class Ui_AddUser(object):
         """
         username = self.lineEditUsername.text()
         phone = self.lineEdit_Phone.text()
-        dbt = self.dateEdit.text()
+
+        dbt = self.dateEdit.date().toString('yyyy-MM-dd')
+
         connection = sqlite3.connect("login.db")
         cursor=connection.cursor()
         cursor.execute("SELECT username FROM CLIENTS WHERE username = ? AND phone = ?", (username, phone))

@@ -61,7 +61,7 @@ class Ui_Registration(object):
         username = self.lineEditUsername.text()
         password = self.lineEdit_2.text()
         confirm_password = self.lineEdit_3.text()
-        dbt = self.dateEdit.text()
+        dbt = self.dateEdit.date().toString('yyyy-MM-dd')
         connection = sqlite3.connect("login.db")
         cursor=connection.cursor()
         cursor.execute("SELECT username FROM USERS WHERE username = ? AND password = ?", (username, password))

@@ -81,20 +81,11 @@ class Ui_AdminWindow(object):
         self.pushButton_3.clicked.connect(self.Delete_user)
         #------------
 
-        self.label = QtWidgets.QLabel(self.centralwidget)
-        self.label.setGeometry(QtCore.QRect(330, 0, 91, 31))
-        font = QtGui.QFont()
-        font.setPointSize(11)
-        self.label.setFont(font)
-        self.label.setObjectName("label")
-        self.label_2 = QtWidgets.QLabel(self.centralwidget)
-        self.label_2.setGeometry(QtCore.QRect(420, 0, 91, 31))
         font = QtGui.QFont()
         font.setPointSize(11)
 
-        self.label_2.setFont(font)
-        self.label_2.setObjectName("label_2")
-
+        font = QtGui.QFont()
+        font.setPointSize(11)
         self.tableWidget = QtWidgets.QTableWidget(self.centralwidget)
         self.tableWidget.setGeometry(QtCore.QRect(80, 40, 481, 441))
         self.tableWidget.setRowCount(10)
@@ -183,9 +174,7 @@ class Ui_AdminWindow(object):
         self.pushButton.setText(_translate("AdminWindow", "Add User"))
         self.pushButton_2.setText(_translate("AdminWindow", "Change User"))
         self.pushButton_3.setText(_translate("AdminWindow", "Delete User"))
-        self.label.setText(_translate("AdminWindow", "Logged in: "))
 
-        self.label_2.setText(_translate("AdminWindow", "TEMP"))
 
         item = self.tableWidget.horizontalHeaderItem(0)
         item.setText(_translate("AdminWindow", "Name"))
@@ -265,7 +254,7 @@ class Ui_AdminWindow(object):
         old_username, old_phone, old_dbt = self.Get_user_data_from_table()
         new_username = self.UpdateUsername.text()
         new_phone = self.UpdatePhone.text()
-        new_dbt = self.dbtDate.text()
+        new_dbt = self.dbtDate.date().toString('yyyy-MM-dd')
         connection = sqlite3.connect("login.db")
         cursor=connection.cursor()
         cursor.execute("UPDATE CLIENTS SET username = ?, phone = ?, Date_of_birth = ? WHERE username = ? AND phone = ?", (new_username, new_phone, new_dbt, old_username, old_phone))
